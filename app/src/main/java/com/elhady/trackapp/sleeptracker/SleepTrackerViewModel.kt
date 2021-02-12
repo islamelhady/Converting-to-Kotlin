@@ -3,9 +3,11 @@ package com.elhady.trackapp.sleeptracker
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import com.elhady.trackapp.database.SleepDatabaseDao
 import com.elhady.trackapp.database.SleepNight
+import com.elhady.trackapp.formatNights
 import kotlinx.coroutines.launch
 
 /**
@@ -17,6 +19,11 @@ class SleepTrackerViewModel(
 ) : AndroidViewModel(application) {
 
     private val tonight = MutableLiveData<SleepNight?>()
+    private val nights = database.getAllNights()
+
+    val nightsString = Transformations.map(nights) { nights ->
+        formatNights(nights, application.resources)
+    }
 
     init {
         initializeTonight()
