@@ -55,4 +55,18 @@ class SleepTrackerViewModel(
         database.insert(night)
 
     }
+
+    // In Kotlin, the return@label syntax specifies the function
+    // from which this statement returns, among several nested
+    fun onStopTracking() {
+        viewModelScope.launch {
+            val oldNight = tonight.value ?: return@launch
+            oldNight.endTimeMilli = System.currentTimeMillis()
+            update(oldNight)
+        }
+    }
+
+    private suspend fun update(night: SleepNight){
+        database.update(night)
+    }
 }
